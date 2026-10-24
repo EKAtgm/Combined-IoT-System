@@ -1,0 +1,24 @@
+name: Update Submodules Automatically
+
+on:
+  schedule:
+
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git diff --quiet || (git commit -am "Auto-update submodules to latest version" && git push)

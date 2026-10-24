@@ -1,0 +1,6 @@
+[submodule "net-monitor"]
+	path = net-monitor
+	url = https://github.com/Keyvan1369/IOT_Net_Monitor.git
+[submodule "esp32-ml"]
+	path = esp32-ml
+	url = https://github.com/egpafschar-oss/ESP32_TinyML_3Class_AnomalyDetection_Watchdog.git
