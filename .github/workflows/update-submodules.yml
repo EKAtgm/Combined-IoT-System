@@ -2,8 +2,7 @@ name: Update Submodules Automatically
 
 on:
   schedule:
-    
-    - cron: '* * * * 30/*'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -16,11 +15,17 @@ jobs:
           submodules: 'recursive'
           token: ${{ secrets.SUBMODULE_UPDATE_PAT }}
 
-      - name: Update submodules
+      - name: Configure Git Identity
         run: |
-          git submodule foreach --recursive 'git fetch origin && git reset --hard origin/main || git reset --hard origin/master'
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Update submodules safely
+        run: |
+          git submodule foreach --recursive 'git fetch origin && (git checkout main || git checkout master) && git reset --hard origin/main || git reset --hard origin/master'
           git submodule update --remote --merge
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+
+      - name: Commit and push changes
+        run: |
           git add -A
           git diff --cached --quiet || (git commit -m "Auto-update submodules to latest version" && git push)
