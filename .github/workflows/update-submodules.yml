@@ -2,7 +2,8 @@ name: Update Submodules Automatically
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    
+    - cron: '* * * * 30/*'
   workflow_dispatch:
 
 jobs:
@@ -17,8 +18,9 @@ jobs:
 
       - name: Update submodules
         run: |
+          git submodule foreach --recursive 'git fetch origin && git reset --hard origin/main || git reset --hard origin/master'
           git submodule update --remote --merge
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add -A
-          git diff --cached --quiet || (git commit -m "Auto-update submodules to latest version" && git push
+          git diff --cached --quiet || (git commit -m "Auto-update submodules to latest version" && git push)
